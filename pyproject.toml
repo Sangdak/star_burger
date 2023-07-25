@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "star-burger"
+version = "0.1.0"
+description = ""
+authors = ["Sangdak <82779027+Sangdak@users.noreply.github.com>"]
+readme = "README.md"
+packages = [{include = "star_burger"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^4.2.3"
+django-debug-toolbar = "^4.1.0"
+pillow = "^10.0.0"
+environs = "^9.5.0"
+dj-database-url = "^2.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
