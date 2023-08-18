@@ -4,6 +4,7 @@ from pprint import pprint
 from django.http import JsonResponse
 from django.templatetags.static import static
 
+from rest_framework.decorators import api_view
 
 from .models import Product, Order, OrderItem
 
@@ -60,28 +61,36 @@ def product_list_api(request):
     })
 
 
+@api_view(['POST'])
 def register_order(request):
-    try:
-        request_order = json.loads(request.body.decode())
-        pprint(request_order)
+    # try:
+    request_order = request.data
+    # pprint(request_order)
 
-        order = Order.objects.create(
-            firstname=request_order['firstname'],
-            lastname=request_order['lastname'],
-            address=request_order['address'],
-            phonenumber=request_order['phonenumber'],
+    order = Order.objects.create(
+        firstname=request_order['firstname'],
+        lastname=request_order['lastname'],
+        address=request_order['address'],
+        phonenumber=request_order['phonenumber'],
+    )
+    for item in request_order['products']:
+        product = Product.objects.get(pk=item['product'])
+        OrderItem.objects.create(
+            order=order,
+            product=product,
+            quantity=item['quantity']
         )
-        for item in request_order['products']:
-            product = Product.objects.get(pk=item['product'])
-            OrderItem.objects.create(
-                order=order,
-                product=product,
-                quantity=item['quantity']
-            )
 
-        return JsonResponse({})
+    return JsonResponse(
+        request_order,
+        safe=False,
+        json_dumps_params={
+            'ensure_ascii': False,
+            'indent': 4,
+        }
+    )
 
-    except ValueError:
-        return JsonResponse({
-            'error': 'An order value error is happened.',
-        })
+    # except ValueError:
+    #     return JsonResponse({
+    #         'error': 'An order value error is happened.',
+    #     })
