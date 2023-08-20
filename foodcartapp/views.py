@@ -1,12 +1,11 @@
-import json
-from pprint import pprint
-
 from django.http import JsonResponse
 from django.templatetags.static import static
 
 from rest_framework.decorators import api_view
 
 from .models import Product, Order, OrderItem
+
+from .serializers import OrderSerializer
 
 
 def banners_list_api(request):
@@ -63,18 +62,19 @@ def product_list_api(request):
 
 @api_view(['POST'])
 def register_order(request):
-    # try:
     request_order = request.data
-    # pprint(request_order)
+
+    serializer = OrderSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
 
     order = Order.objects.create(
-        firstname=request_order['firstname'],
-        lastname=request_order['lastname'],
-        address=request_order['address'],
-        phonenumber=request_order['phonenumber'],
+        firstname=serializer.validated_data['firstname'],
+        lastname=serializer.validated_data['lastname'],
+        address=serializer.validated_data['address'],
+        phonenumber=serializer.validated_data['phonenumber'],
     )
-    for item in request_order['products']:
-        product = Product.objects.get(pk=item['product'])
+    for item in serializer.validated_data['products']:
+        product = Product.objects.get(pk=item['product'].pk)
         OrderItem.objects.create(
             order=order,
             product=product,
@@ -89,8 +89,3 @@ def register_order(request):
             'indent': 4,
         }
     )
-
-    # except ValueError:
-    #     return JsonResponse({
-    #         'error': 'An order value error is happened.',
-    #     })
