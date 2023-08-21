@@ -134,8 +134,24 @@ class OrderQuerySet(models.QuerySet):
 
 
 class Order(models.Model):
+    CREATE = 'CREATE'
+    PREPARE = 'PREPARE'
+    DELIVER = 'DELIVER'
+    DONE = 'DONE'
+    STATE_CHOICES = [
+        (CREATE, 'Создан'),
+        (PREPARE, 'Готовится'),
+        (DELIVER, 'Доставляется'),
+        (DONE, 'Выполнен'),
+    ]
     id = models.BigAutoField(
         primary_key=True,
+    )
+    status = models.CharField(
+        max_length=15,
+        choices=STATE_CHOICES,
+        default=CREATE,
+        verbose_name='Статус заказа',
     )
     firstname = models.CharField(
         max_length=30,
@@ -160,7 +176,7 @@ class Order(models.Model):
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
         indexes = [
-            models.Index(fields=['phonenumber', ])
+            models.Index(fields=['phonenumber', 'status'])
         ]
 
     def __str__(self):
