@@ -95,6 +95,8 @@ def view_orders(request):
     orders = Order.objects.with_cost_in_total().exclude(status=Order.DONE)
     for order in orders:
         order.status = dict(Order.STATE_CHOICES)[order.status]
+        order.payment_type = 'Не выбрано' if order.payment_type == '' \
+            else dict(Order.PAYMENT_TYPE_CHOICES)[order.payment_type]
 
     # orders = {'status': dict(Order.STATE_CHOICES)[order.status] for order in orders}
     return render(request, template_name='order_items.html', context={

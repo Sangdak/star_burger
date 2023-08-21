@@ -145,6 +145,14 @@ class Order(models.Model):
         (DELIVER, 'Доставляется'),
         (DONE, 'Выполнен'),
     ]
+
+    CASH = 'CASH'
+    CARD = 'CARD'
+    PAYMENT_TYPE_CHOICES = [
+        (CASH, 'Наличные'),
+        (CARD, 'Карта'),
+    ]
+
     id = models.BigAutoField(
         primary_key=True,
     )
@@ -153,6 +161,12 @@ class Order(models.Model):
         choices=STATE_CHOICES,
         default=CREATE,
         verbose_name='Статус заказа',
+    )
+    payment_type = models.CharField(
+        max_length=10,
+        choices=PAYMENT_TYPE_CHOICES,
+        default='',
+        verbose_name='Форма оплаты',
     )
     firstname = models.CharField(
         max_length=30,
