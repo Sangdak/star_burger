@@ -90,4 +90,8 @@ def register_order(request):
     #         'indent': 4,
     #     }
     # )
-    return Response(serializer.data)
+
+    response_data = serializer.data
+    response_data['id'] = Order.objects.last().id
+
+    return Response(response_data)
