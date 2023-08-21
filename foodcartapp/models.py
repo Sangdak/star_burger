@@ -125,6 +125,14 @@ class RestaurantMenuItem(models.Model):
         return f"{self.restaurant.name} - {self.product.name}"
 
 
+class OrderQuerySet(models.QuerySet):
+    def with_cost_in_total(self):
+        return Order.objects.annotate(
+            total_cost=models.Sum(
+                models.F('items__quantity') * models.F('items__product__price')
+            ))
+
+
 class Order(models.Model):
     id = models.BigAutoField(
         primary_key=True,
@@ -145,6 +153,8 @@ class Order(models.Model):
         max_length=150,
         verbose_name='Адрес',
     )
+
+    objects = OrderQuerySet.as_manager()
 
     class Meta:
         verbose_name = 'Заказ'
