@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.utils import timezone
 
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -174,6 +175,20 @@ class Order(models.Model):
         default='',
         verbose_name='Комментарий',
     )
+    registered_at = models.DateTimeField(
+        default=timezone.now,
+        verbose_name='Создан',
+    )
+    called_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name='Звонок',
+    )
+    delivered_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name='Доставлен',
+    )
 
     objects = OrderQuerySet.as_manager()
 
@@ -181,11 +196,17 @@ class Order(models.Model):
         verbose_name = 'Заказ'
         verbose_name_plural = 'Заказы'
         indexes = [
-            models.Index(fields=['phonenumber', 'status'])
+            models.Index(fields=[
+                'phonenumber',
+                'status',
+                'registered_at',
+                'called_at',
+                'delivered_at',
+            ])
         ]
 
     def __str__(self):
-        return f'{self.firstname} {self.lastname} {self.address}'
+        return f'{self.registered_at} - {self.firstname} {self.lastname} {self.address}'
 
 
 class OrderItem(models.Model):
