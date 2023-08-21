@@ -129,7 +129,7 @@ class OrderQuerySet(models.QuerySet):
     def with_cost_in_total(self):
         return Order.objects.annotate(
             total_cost=models.Sum(
-                models.F('items__quantity') * models.F('items__product__price')
+                models.F('items__quantity') * models.F('items__price')
             ))
 
 
@@ -182,6 +182,12 @@ class OrderItem(models.Model):
     quantity = models.PositiveSmallIntegerField(
         # validators=
         verbose_name='Количество'
+    )
+    price = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
+        verbose_name='Цена товара',
     )
 
     class Meta:
