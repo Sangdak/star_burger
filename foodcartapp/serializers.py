@@ -13,8 +13,10 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    products = OrderItemSerializer(many=True, allow_empty=False)
+    products = OrderItemSerializer(many=True, allow_empty=False, write_only=True)
 
     class Meta:
         model = Order
         fields = '__all__'
+        # fields = ['id', 'firstname', 'lastname', 'phonenumber', 'address', 'products']
+        # extra_kwargs = {'products': {'write_only': True}}

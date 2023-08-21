@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.templatetags.static import static
 
 from rest_framework.decorators import api_view
+from  rest_framework.response import Response
 
 from .models import Product, Order, OrderItem
 
@@ -81,11 +82,12 @@ def register_order(request):
             quantity=item['quantity']
         )
 
-    return JsonResponse(
-        request_order,
-        safe=False,
-        json_dumps_params={
-            'ensure_ascii': False,
-            'indent': 4,
-        }
-    )
+    # return JsonResponse(
+    #     request_order,
+    #     safe=False,
+    #     json_dumps_params={
+    #         'ensure_ascii': False,
+    #         'indent': 4,
+    #     }
+    # )
+    return Response(serializer.data)
