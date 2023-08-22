@@ -200,6 +200,12 @@ class Order(models.Model):
         blank=True,
         verbose_name='Ресторан',
     )
+    near_restaurant = models.CharField(
+        max_length=150,
+        null=True,
+        blank=True,
+        verbose_name='Ресторан рядом',
+    )
     registered_at = models.DateTimeField(
         default=timezone.now,
         verbose_name='Создан',

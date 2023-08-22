@@ -1,13 +1,14 @@
 from django import forms
+from django.conf import settings
+from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import redirect, render
 from django.views import View
 from django.urls import reverse_lazy
-from django.contrib.auth.decorators import user_passes_test
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 
-
+import restaurateur.services
 from foodcartapp.models import Order, OrderItem, Product, Restaurant, RestaurantMenuItem
 
 
@@ -112,8 +113,21 @@ def view_orders(request):
                 restaurants = set(restaurants).intersection(set(rest))
 
             order.restaurants = [Restaurant.objects.get(id=rest_id).name for rest_id in list(restaurants)]
+
+            customer_coords = restaurateur.services.fetch_coordinates(settings.YANDEX_GEO_API_KEY, order.address)
+
+            # print('COORD', customer_coords)
+            for index, restaurant in enumerate(order.restaurants):
+                restaurant_address = Restaurant.objects.get(name=restaurant).address
+                restaurant_coords = restaurateur.services.fetch_coordinates(settings.YANDEX_GEO_API_KEY, restaurant_address)
+
+                distance = restaurateur.services.compute_distance(customer_coords, restaurant_coords)
+                print(distance)
+                order.restaurants[index] = f'{restaurant} - {distance.__ceil__()} км.'
+            print(order.restaurants)
+
         else:
-            order.restaurants = [order.restaurant,]
+            order.restaurants = [order.restaurant, ]
 
     return render(request, template_name='order_items.html', context={
         'order_items': orders,
