@@ -133,6 +133,9 @@ class OrderQuerySet(models.QuerySet):
                 models.F('items__quantity') * models.F('items__price')
             ))
 
+    def available_restaurants(self):
+        return Order.objects.annotate(available_restaurants=[])
+
 
 class Order(models.Model):
     CREATE = 'CREATE'
@@ -189,6 +192,14 @@ class Order(models.Model):
         default='',
         verbose_name='Комментарий',
     )
+    restaurant = models.ForeignKey(
+        Restaurant,
+        on_delete=models.SET_NULL,
+        default=None,
+        null=True,
+        blank=True,
+        verbose_name='Ресторан',
+    )
     registered_at = models.DateTimeField(
         default=timezone.now,
         verbose_name='Создан',
@@ -216,6 +227,7 @@ class Order(models.Model):
                 'registered_at',
                 'called_at',
                 'delivered_at',
+                'payment_type',
             ])
         ]
 
@@ -232,6 +244,7 @@ class OrderItem(models.Model):
     )
     product = models.ForeignKey(
         Product,
+        related_name='items',
         on_delete=models.CASCADE,
         verbose_name='Товар',
     )

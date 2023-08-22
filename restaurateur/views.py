@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 
 
-from foodcartapp.models import Order, Product, Restaurant
+from foodcartapp.models import Order, OrderItem, Product, Restaurant, RestaurantMenuItem
 
 
 class Login(forms.Form):
@@ -92,13 +92,29 @@ def view_restaurants(request):
 
 @user_passes_test(is_manager, login_url='restaurateur:login')
 def view_orders(request):
-    orders = Order.objects.with_cost_in_total().exclude(status=Order.DONE)
+    orders = Order.objects.with_cost_in_total().exclude(status=Order.DONE).order_by('status')
     for order in orders:
         order.status = dict(Order.STATE_CHOICES)[order.status]
         order.payment_type = 'Не выбрано' if order.payment_type == '' \
             else dict(Order.PAYMENT_TYPE_CHOICES)[order.payment_type]
 
-    # orders = {'status': dict(Order.STATE_CHOICES)[order.status] for order in orders}
+        if order.restaurant is None:
+            order_product_ids = [x.product.id for x in OrderItem.objects.filter(order__id=order.id)]
+
+            restaurants_raw = []
+            for product_id in order_product_ids:
+                restaurant_ids_by_products = \
+                    [x.restaurant.id for x in RestaurantMenuItem.objects.filter(product__id=product_id)]
+                restaurants_raw.append(restaurant_ids_by_products)
+
+            restaurants = restaurants_raw[0]
+            for rest in restaurants_raw[1:]:
+                restaurants = set(restaurants).intersection(set(rest))
+
+            order.restaurants = [Restaurant.objects.get(id=rest_id).name for rest_id in list(restaurants)]
+        else:
+            order.restaurants = [order.restaurant,]
+
     return render(request, template_name='order_items.html', context={
         'order_items': orders,
     })
