@@ -4,6 +4,8 @@ from django.utils import timezone
 
 from phonenumber_field.modelfields import PhoneNumberField
 
+from location.models import Location
+
 
 class Restaurant(models.Model):
     name = models.CharField(
@@ -128,7 +130,8 @@ class RestaurantMenuItem(models.Model):
 
 class OrderQuerySet(models.QuerySet):
     def with_cost_in_total(self):
-        return Order.objects.annotate(
+        # return Order.objects.annotate(
+        return self.prefetch_related('items', 'items__product').annotate(
             total_cost=models.Sum(
                 models.F('items__quantity') * models.F('items__price')
             ))

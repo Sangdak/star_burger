@@ -11,6 +11,7 @@ from .models import Restaurant
 from .models import RestaurantMenuItem
 from .models import Order
 from .models import OrderItem
+from .models import Location
 
 
 class RestaurantMenuItemInline(admin.TabularInline):
@@ -127,3 +128,8 @@ class OrderAdmin(admin.ModelAdmin):
             return HttpResponseRedirect(request.GET['next'])
         else:
             return custom_response
+
+
+@admin.register(Location)
+class LocationAdmin(admin.ModelAdmin):
+    pass

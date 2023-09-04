@@ -8,8 +8,8 @@ from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import views as auth_views
 
-import restaurateur.services
 from foodcartapp.models import Order, OrderItem, Product, Restaurant, RestaurantMenuItem
+from restaurateur.services import fetch_coordinates, compute_distance
 
 
 class Login(forms.Form):
@@ -114,16 +114,16 @@ def view_orders(request):
 
             order.restaurants = [Restaurant.objects.get(id=rest_id).name for rest_id in list(restaurants)]
 
-            customer_coords = restaurateur.services.fetch_coordinates(settings.YANDEX_GEO_API_KEY, order.address)
+            customer_coords = fetch_coordinates(settings.YANDEX_GEO_API_KEY, order.address)
 
             # print('COORD', customer_coords)
             for index, restaurant in enumerate(order.restaurants):
                 restaurant_address = Restaurant.objects.get(name=restaurant).address
-                restaurant_coords = restaurateur.services.fetch_coordinates(settings.YANDEX_GEO_API_KEY, restaurant_address)
+                restaurant_coords = fetch_coordinates(settings.YANDEX_GEO_API_KEY, restaurant_address)
 
-                distance = restaurateur.services.compute_distance(customer_coords, restaurant_coords)
+                distance = compute_distance(customer_coords, restaurant_coords)
                 print(distance)
-                order.restaurants[index] = f'{restaurant} - {distance.__ceil__()} км.'
+                order.restaurants[index] = f'{restaurant} - {round(distance, 2)} км.'
             print(order.restaurants)
 
         else:
