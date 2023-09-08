@@ -83,15 +83,6 @@ def register_order(request):
             price=product.price,
         )
 
-    # return JsonResponse(
-    #     request_order,
-    #     safe=False,
-    #     json_dumps_params={
-    #         'ensure_ascii': False,
-    #         'indent': 4,
-    #     }
-    # )
-
     response_data = serializer.data
     response_data['id'] = Order.objects.last().id
 
