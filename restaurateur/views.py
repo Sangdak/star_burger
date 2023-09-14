@@ -95,7 +95,6 @@ def view_restaurants(request):
 def view_orders(request):
     restaurants = {restaurant.id: restaurant.name for restaurant in Restaurant.objects.all()}
     addresses = {restaurant.id: restaurant.address for restaurant in Restaurant.objects.all()}
-    print(restaurants)
 
     orders = (
         Order.objects.with_cost_in_total().select_related('restaurant')
