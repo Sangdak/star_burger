@@ -126,7 +126,6 @@ def view_orders(request):
 
             customer_coords = fetch_coordinates(settings.YANDEX_GEO_API_KEY, order.address)
 
-
             order.restaurants = [restaurants[rest_id] for rest_id in available_restaurants]
 
             for index, restaurant in enumerate(available_restaurants):

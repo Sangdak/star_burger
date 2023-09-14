@@ -159,9 +159,6 @@ class Order(models.Model):
         (CARD, 'Карта'),
     ]
 
-    id = models.BigAutoField(
-        primary_key=True,
-    )
     status = models.CharField(
         max_length=15,
         choices=STATE_CHOICES,
