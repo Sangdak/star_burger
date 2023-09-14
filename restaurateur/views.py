@@ -106,7 +106,6 @@ def view_orders(request):
     for menu in restaurants_menus:
         restaurants_menus_product_ids.setdefault(menu.restaurant.id, [])
         restaurants_menus_product_ids[menu.restaurant.id].append(menu.product_id)
-    print(restaurants_menus_product_ids)
 
     for order in orders:
         order.status = dict(Order.STATE_CHOICES)[order.status]
