@@ -11,9 +11,13 @@ class Location(models.Model):
         verbose_name='Адрес',
     )
     longitude = models.FloatField(
+        blank=True,
+        null=True,
         verbose_name='Долгота',
     )
     latitude = models.FloatField(
+        blank=True,
+        null=True,
         verbose_name='Широта',
     )
 
