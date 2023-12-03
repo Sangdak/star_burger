@@ -10,3 +10,4 @@ services:
       - .env_db
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
+    restart: always
