@@ -5,7 +5,7 @@ services:
     image: postgres:15
     container_name: starburger_db
     volumes:
-      - ~/.pg/pg_data/astrouser:/var/lib/postgresql/data
+      - ~/.pg/pg_data/testuser:/var/lib/postgresql/data
     env_file:
       - .env_db
     ports:
