@@ -11,3 +11,17 @@ services:
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     restart: always
+
+  nginx:
+    image: nginx:latest
+    expose:
+      - 8080
+    ports:
+      - "80:8080"
+    volumes:
+      - /opt/star_burger/static:/srv/www/<project>/static
+      - /opt/star_burger/media:/srv/www/<project>/media
+      - /opt/docker/nginx:/etc/nginx/conf.d
+    depends_on:
+      - db
+    restart: always
