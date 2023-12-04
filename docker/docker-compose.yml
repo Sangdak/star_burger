@@ -12,17 +12,17 @@ services:
       - "${POSTGRES_PORT:-5432}:5432"
     restart: always
 
-  nginx:
-    image: nginx:latest
-    expose:
-      - 8080
-    ports:
-      - "80:8080"
-    volumes:
-      - /opt/star_burger/static:/srv/www/starburger/static
-      - /opt/star_burger/media:/srv/www/starburger/media
-      - /opt/docker/nginx:/etc/nginx/conf.d
-      - /opt/docker/logs:/srv/www/starburger/logs
-    depends_on:
-      - db
-    restart: always
+#  nginx:
+#    image: nginx:latest
+#    expose:
+#      - 8080
+#    ports:
+#      - "80:8080"
+#    volumes:
+#      - /opt/star_burger/static:/srv/www/starburger/static
+#      - /opt/star_burger/media:/srv/www/starburger/media
+#      - /opt/docker/nginx:/etc/nginx/conf.d
+#      - /opt/docker/logs:/srv/www/starburger/logs
+#    depends_on:
+#      - db
+#    restart: always
